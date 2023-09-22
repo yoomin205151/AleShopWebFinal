@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ALESHOPWEBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="carrito">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id_producto" Type="Int32" />
+    <Property Name="cantidad" Type="Int32" />
+    <Property Name="id_usuario" Type="Int32" />
+    <Property Name="preciounitario" Type="Int32" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="producto" Relationship="Self.FK_carrito_producto" FromRole="carrito" ToRole="producto" />
+    <NavigationProperty Name="usuario" Relationship="Self.FK_carrito_usuario" FromRole="carrito" ToRole="usuario" />
+  </EntityType>
+  <EntityType Name="carrito_pc">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_producto" Type="Int32" />
+    <Property Name="cantidad" Type="Int32" />
+    <Property Name="preciounitario" Type="Int32" />
+    <NavigationProperty Name="producto" Relationship="Self.FK_carrito_pc_producto" FromRole="carrito_pc" ToRole="producto" />
+  </EntityType>
+  <EntityType Name="categoria">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="producto" Relationship="Self.FK_producto_categoria" FromRole="categoria" ToRole="producto" />
+  </EntityType>
+  <EntityType Name="detalle_venta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_venta" Type="Int32" />
+    <Property Name="id_producto" Type="Int32" />
+    <Property Name="cantidad" Type="Int32" />
+    <Property Name="precio" Type="Int32" />
+    <NavigationProperty Name="producto" Relationship="Self.FK_detalle_venta_producto1" FromRole="detalle_venta" ToRole="producto" />
+    <NavigationProperty Name="venta" Relationship="Self.FK_detalle_venta_venta" FromRole="detalle_venta" ToRole="venta" />
+  </EntityType>
+  <EntityType Name="origen">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="tipo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="venta" Relationship="Self.FK_venta_origen" FromRole="origen" ToRole="venta" />
+  </EntityType>
+  <EntityType Name="producto">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="activo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="stock" Type="Int32" />
+    <Property Name="id_categoria" Type="Int32" />
+    <Property Name="precio" Type="Int32" />
+    <Property Name="img" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="carrito" Relationship="Self.FK_carrito_producto" FromRole="producto" ToRole="carrito" />
+    <NavigationProperty Name="carrito_pc" Relationship="Self.FK_carrito_pc_producto" FromRole="producto" ToRole="carrito_pc" />
+    <NavigationProperty Name="categoria" Relationship="Self.FK_producto_categoria" FromRole="producto" ToRole="categoria" />
+    <NavigationProperty Name="detalle_venta" Relationship="Self.FK_detalle_venta_producto1" FromRole="producto" ToRole="detalle_venta" />
+  </EntityType>
+  <EntityType Name="rol">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="tipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="usuario" Relationship="Self.FK_usuario_rol" FromRole="rol" ToRole="usuario" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="usuario">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="contrasenia" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="id_rol" Type="Int32" />
+    <NavigationProperty Name="carrito" Relationship="Self.FK_carrito_usuario" FromRole="usuario" ToRole="carrito" />
+    <NavigationProperty Name="rol" Relationship="Self.FK_usuario_rol" FromRole="usuario" ToRole="rol" />
+    <NavigationProperty Name="venta" Relationship="Self.FK_venta_usuario" FromRole="usuario" ToRole="venta" />
+  </EntityType>
+  <EntityType Name="venta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fecha" Type="DateTime" Precision="3" />
+    <Property Name="total" Type="Int32" />
+    <Property Name="id_origen" Type="Int32" />
+    <Property Name="id_usuario" Type="Int32" />
+    <NavigationProperty Name="detalle_venta" Relationship="Self.FK_detalle_venta_venta" FromRole="venta" ToRole="detalle_venta" />
+    <NavigationProperty Name="origen" Relationship="Self.FK_venta_origen" FromRole="venta" ToRole="origen" />
+    <NavigationProperty Name="usuario" Relationship="Self.FK_venta_usuario" FromRole="venta" ToRole="usuario" />
+  </EntityType>
+  <Association Name="FK_carrito_producto">
+    <End Role="producto" Type="Self.producto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="carrito">
+        <PropertyRef Name="id_producto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_carrito_usuario">
+    <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
+    <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="carrito">
+        <PropertyRef Name="id_usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_carrito_pc_producto">
+    <End Role="producto" Type="Self.producto" Multiplicity="0..1" />
+    <End Role="carrito_pc" Type="Self.carrito_pc" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="carrito_pc">
+        <PropertyRef Name="id_producto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_producto_categoria">
+    <End Role="categoria" Type="Self.categoria" Multiplicity="0..1" />
+    <End Role="producto" Type="Self.producto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="categoria">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="producto">
+        <PropertyRef Name="id_categoria" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_detalle_venta_producto1">
+    <End Role="producto" Type="Self.producto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="detalle_venta" Type="Self.detalle_venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="detalle_venta">
+        <PropertyRef Name="id_producto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_detalle_venta_venta">
+    <End Role="venta" Type="Self.venta" Multiplicity="0..1" />
+    <End Role="detalle_venta" Type="Self.detalle_venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="venta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="detalle_venta">
+        <PropertyRef Name="id_venta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_venta_origen">
+    <End Role="origen" Type="Self.origen" Multiplicity="0..1" />
+    <End Role="venta" Type="Self.venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="origen">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="venta">
+        <PropertyRef Name="id_origen" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_usuario_rol">
+    <End Role="rol" Type="Self.rol" Multiplicity="0..1" />
+    <End Role="usuario" Type="Self.usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="rol">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="usuario">
+        <PropertyRef Name="id_rol" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_venta_usuario">
+    <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
+    <End Role="venta" Type="Self.venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="venta">
+        <PropertyRef Name="id_usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ALESHOPWEBEntities9" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="carrito" EntityType="Self.carrito" />
+    <EntitySet Name="carrito_pc" EntityType="Self.carrito_pc" />
+    <EntitySet Name="categoria" EntityType="Self.categoria" />
+    <EntitySet Name="detalle_venta" EntityType="Self.detalle_venta" />
+    <EntitySet Name="origen" EntityType="Self.origen" />
+    <EntitySet Name="producto" EntityType="Self.producto" />
+    <EntitySet Name="rol" EntityType="Self.rol" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="usuario" EntityType="Self.usuario" />
+    <EntitySet Name="venta" EntityType="Self.venta" />
+    <AssociationSet Name="FK_carrito_producto" Association="Self.FK_carrito_producto">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="carrito" EntitySet="carrito" />
+    </AssociationSet>
+    <AssociationSet Name="FK_carrito_usuario" Association="Self.FK_carrito_usuario">
+      <End Role="usuario" EntitySet="usuario" />
+      <End Role="carrito" EntitySet="carrito" />
+    </AssociationSet>
+    <AssociationSet Name="FK_carrito_pc_producto" Association="Self.FK_carrito_pc_producto">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="carrito_pc" EntitySet="carrito_pc" />
+    </AssociationSet>
+    <AssociationSet Name="FK_producto_categoria" Association="Self.FK_producto_categoria">
+      <End Role="categoria" EntitySet="categoria" />
+      <End Role="producto" EntitySet="producto" />
+    </AssociationSet>
+    <AssociationSet Name="FK_detalle_venta_producto1" Association="Self.FK_detalle_venta_producto1">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="detalle_venta" EntitySet="detalle_venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_detalle_venta_venta" Association="Self.FK_detalle_venta_venta">
+      <End Role="venta" EntitySet="venta" />
+      <End Role="detalle_venta" EntitySet="detalle_venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_venta_origen" Association="Self.FK_venta_origen">
+      <End Role="origen" EntitySet="origen" />
+      <End Role="venta" EntitySet="venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_usuario_rol" Association="Self.FK_usuario_rol">
+      <End Role="rol" EntitySet="rol" />
+      <End Role="usuario" EntitySet="usuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_venta_usuario" Association="Self.FK_venta_usuario">
+      <End Role="usuario" EntitySet="usuario" />
+      <End Role="venta" EntitySet="venta" />
+    </AssociationSet>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(ALESHOPWEBModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(ALESHOPWEBModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+</Schema>

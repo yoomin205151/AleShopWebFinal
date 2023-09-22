@@ -1,0 +1,307 @@
+﻿@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #tabla {
+        margin: 0 auto;
+        text-align: center;
+    }
+</style>
+<div class="card" style="margin-top:18px">
+    <div class="card-header">
+        <i class="fas fa-users me-1"></i>Lista De Productos
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#FormModal" onclick="abrirModal(null)">Crear Nuevo</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <table id="tabla" class="display cell-border" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Stock</th>
+                    <th>Categoria</th>
+                    <th>Precio</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Crear -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body g-2">
+                <input type="hidden" id="txtid" name="id" value="0" />
+                <form id="usuarioForm" method="post" enctype="multipart/form-data">
+                    <!-- Agregamos el atributo enctype para enviar archivos -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="txtnombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="txtnombre" name="nombre">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtstock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="txtstock" name="stock">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtprecio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="txtprecio" name="precio">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtcategoria" class="form-label">Categoria</label>
+                            <select class="form-select" aria-label="Default select example" id="txtcategoria" name="id_categoria">
+                                <option selected>Elija una categoría</option>
+                                @foreach (var categoria in ViewBag.Categorias)
+                                {
+                                    <option value="@categoria.id">@categoria.nombre</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="txtimg" class="form-label">Imagen</label>
+                            <input class="form-control" type="file" id="txtimg" name="ImagenFile"> <!-- Actualizamos el nombre del input file -->
+                            <img id="previewImg" src="" width="135" height="100">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button id="btnGuardarCambios" type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Agregar el código de los mensajes toast -->
+<div id="toastContainer" style="position: fixed; top: 16px; right: 16px; z-index: 9999;"></div>
+
+@section scripts {
+    <script>
+        function getFileNameFromPath(path) {
+            return path.replace(/^.*[\\\/]/, '');
+        }
+
+        $(document).ready(function () {
+            // Inicializar DataTables
+            var tabla = $('#tabla').DataTable({
+                responsive: true,
+                ordering: false,
+                ajax: {
+                    url: '@Url.Action("ListarProducto", "Producto")',
+                    type: 'GET',
+                    dataType: 'json',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: 'id' },
+                    {
+                        data: 'img',
+                        render: function (data) {
+                            if (data !== null && data !== '') {
+                                return '<img src="data:image/png;base64,' + data + '" width="135" height="100" />';
+                            } else {
+                                return '';
+                            }
+                        },
+                        defaultContent: ''
+                    },
+                    { data: 'nombre' },
+                    { data: 'stock' },
+                    { data: 'categoria' },
+                    { data: 'precio' },
+                    { data: 'activo' },
+                    {
+                        defaultContent: '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
+                            '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash"></i></button>',
+                        orderable: false,
+                        searchable: false,
+                        width: "60px"
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json'
+                }
+            });
+
+            function abrirModal(json) {
+                $("#txtid").val(0);
+                $("#txtnombre").val("");
+                $("#txtprecio").val("");
+                $("#txtstock").val("");
+                $("#txtimg").val("");
+                $("#txtcategoria").val("");
+
+                if (json !== null) {
+                    $("#txtid").val(json.id);
+                    $("#txtnombre").val(json.nombre);
+                    $("#txtprecio").val(json.precio);
+                    $("#txtstock").val(json.stock);
+                    $("#txtcategoria").val(json.id_categoria);
+
+                    // Mostrar la imagen base64 en el elemento <img> de previewImg
+                    if (json.img !== null && json.img !== '') {
+                        var imgSrc = 'data:image/png;base64,' + json.img;
+                        $("#previewImg").attr("src", imgSrc);
+                    } else {
+                        $("#previewImg").attr("src", ""); // Si no hay imagen, establecer el atributo src como vacío
+                    }
+                }
+               
+                $("#FormModal").modal("show");
+            }
+
+            // Mostrar mensaje toast
+            function showToast(message, type) {
+                var toastContainer = $("#toastContainer");
+                var toastClass = "";
+
+                switch (type) {
+                    case "success":
+                        toastClass = "bg-success text-white";
+                        break;
+                    case "error":
+                        toastClass = "bg-danger text-white";
+                        break;
+                }
+
+                var toast = `
+                    <div class="toast show ${toastClass}" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-body">
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                toastContainer.append(toast);
+
+                $(".toast").toast("show");
+                $(".toast").on("hidden.bs.toast", function () {
+                    $(this).remove();
+                });
+            }
+
+            // Evento de clic para el botón de editar
+            $("#tabla tbody").on("click", ".btn-editar", function () {
+                var filaSeleccionada = $(this).closest("tr");
+                var data = tabla.row(filaSeleccionada).data();
+                console.log(data)
+                abrirModal(data);
+            });
+
+            // Evento de clic para el botón de eliminar
+            $("#tabla tbody").on("click", ".btn-eliminar", function () {
+                var filaSeleccionada = $(this).closest("tr");
+                var data = tabla.row(filaSeleccionada).data();
+                var idProducto = data.id;
+
+                if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+                    $.post("@Url.Action("EliminarProducto", "Producto")", { id: idProducto })
+                        .done(function (response) {
+                            showToast("Producto eliminado exitosamente.", "success");
+                            tabla.row(filaSeleccionada).remove().draw(); // Eliminar la fila de la tabla
+                        })
+                        .fail(function (error) {
+                            showToast("Ha ocurrido un error al eliminar el producto.", "error");
+                            console.error(error);
+                        });
+                }
+            });
+
+            // Evento de clic para cambiar el estado "activo" de un producto
+            $("#tabla tbody").on("click", "td:nth-child(7)", function () {
+                var filaSeleccionada = $(this).closest("tr");
+                var data = tabla.row(filaSeleccionada).data();
+                var idProducto = data.id;
+                var estadoActual = data.activo;
+
+                var nuevoEstado = estadoActual === "activo" ? "inactivo" : "activo";
+
+                $.post("@Url.Action("CambiarEstadoProducto", "Producto")", { id: idProducto, nuevoEstado: nuevoEstado })
+                    .done(function (response) {
+                        showToast("Estado del producto cambiado exitosamente.", "success");
+                        data.activo = nuevoEstado;
+                        tabla.row(filaSeleccionada).data(data).draw(); // Actualizar el estado en la tabla
+                    })
+                    .fail(function (error) {
+                        showToast("Ha ocurrido un error al cambiar el estado del producto.", "error");
+                        console.error(error);
+                    });
+            });
+
+            $("#btnGuardarCambios").click(function () {
+                var formData = new FormData($("#usuarioForm")[0]);
+
+                if ($("#txtid").val() == 0) {
+                    $.ajax({
+                        url: "@Url.Action("CrearProducto", "Producto")",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            showToast("Producto creado exitosamente.", "success");
+                            tabla.ajax.reload();
+                            $("#FormModal").modal("hide");
+                        },
+                        error: function (error) {
+                            showToast("Ha ocurrido un error al crear el producto.", "error");
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    formData.append("id", $("#txtid").val());
+                    $.ajax({
+                        url: "@Url.Action("ModificarProducto", "Producto")",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            showToast("Producto modificado exitosamente.", "success");
+                            tabla.ajax.reload();
+                            $("#FormModal").modal("hide");
+                        },
+                        error: function (error) {
+                            showToast("Ha ocurrido un error al modificar el producto.", "error");
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+
+            // Evento de envío del formulario de creación/edición
+            $("#usuarioForm").submit(function (event) {
+                event.preventDefault();
+            });
+
+            // Reiniciar campos al cerrar el modal
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#usuarioForm")[0].reset();
+                $("#previewImg").attr("src", ""); // Restablecer el atributo src de la imagen a vacío
+            });
+        });
+    </script>
+}
+
+

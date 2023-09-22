@@ -1,0 +1,55 @@
+﻿@model List<AleShopWeb2.Models.venta>
+
+@{
+    ViewBag.Title = "Venta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="me-2">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="ms-2 mt-2">Mis Compras</h5>
+                                </div>
+                                <hr class="mt-2 mb-2">
+
+                                <div id="productos-carrito">
+                                    @foreach (var venta in Model)
+                                    {
+                                        <div class="row mb-3">
+                                            <div class="col-sm-4 align-self-center">
+                                                <span>Fecha: </span>
+                                                <span>
+                                                    @if (venta.fecha.HasValue)
+                                                    {
+                                                        @venta.fecha.Value.ToString("yyyy-MM-dd")
+                                                    }
+                                                </span>
+                                            </div>
+
+                                            <div class="col-sm-4 align-self-center">
+                                                <span>Total: </span>
+                                                <span>@venta.total</span>
+                                            </div>
+
+                                            <div class="col-sm-4 align-self-center">
+                                                <a href="@Url.Action("DetalleVenta", "Venta", new { id = venta.id })" class="btn btn-outline-primary">
+                                                    <i class="far fa-file-alt"></i> Ver Detalle
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewBag.Title = "Carrito2";
+}
+
+<main>
+    
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <div class="me-2">
+                                        <div class="d-flex justify-content-between">
+                                            <h5 class="ms-2 mt-2">Detalle Carrito</h5>
+                                            <a class="btn btn-primary" href="@Url.Action("Producto", "Producto")">
+                                                <i class="fas fa-cart-plus"></i>Seguir Comprando
+                                            </a>
+                                        </div>
+                                        <hr class="mt-2 mb-2">
+
+                                        <div id="productos-carrito">
+                                            <!-- Aquí se cargarán dinámicamente los productos del carrito -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="card">
+                                        <div class="card-body bg-light">
+                                            <h5 class="card-title">Resumen</h5>
+                                            <form>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Total: <span id="total-precio">0</span></label>
+                                                </div>
+
+                                                <div class="d-grid">
+                                                    <button class="btn btn-success" type="button" onclick="RealizarPago()">
+                                                        <i class="fab fa-paypal"></i>Pagar
+                                                    </button>
+
+                                                </div>                                               
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="wallet_container">
+
+        </div>
+</main>
+@section scripts{
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script>
+        async function cargarPreferencia() {
+            try {
+                const response = await $.ajax({
+                    url: '@Url.Action("Preferencia", "Venta")',
+                    type: 'GET',
+                    dataType: 'json',
+                });
+
+                return response.preferenceId;
+            } catch (error) {
+                console.error('Error al cargar la preferencia:', error);
+                throw error;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const mp = new MercadoPago('TEST-a8b5831d-b095-4c9f-9dcb-09f306fa3bd9');
+            const walletContainer = document.getElementById('wallet_container');
+
+            const preferenciaId = await cargarPreferencia();
+
+            const walletElement = document.createElement('div');
+            walletElement.id = 'wallet';
+            walletContainer.appendChild(walletElement);
+
+            console.log(preferenciaId);
+
+            mp.bricks().create("wallet", "wallet_container", {
+                initialization: {
+                    preferenceId: preferenciaId,
+                },
+            });
+        });
+    </script>
+}

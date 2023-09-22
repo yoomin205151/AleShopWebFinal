@@ -1,0 +1,226 @@
+﻿@{
+    ViewBag.Title = "Carrito";
+}
+<main>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="me-2">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="ms-2 mt-2">Detalle Carrito</h5>
+                                        <a class="btn btn-primary" href="@Url.Action("Producto", "Producto")">
+                                            <i class="fas fa-cart-plus"></i>Seguir Comprando
+                                        </a>
+                                    </div>
+                                    <hr class="mt-2 mb-2">
+
+                                    <div id="productos-carrito">
+                                        <!-- Aquí se cargarán dinámicamente los productos del carrito -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <div class="card-body bg-light">
+                                        <h5 class="card-title">Resumen</h5>
+                                        <form>
+                                            <div class="mb-2">
+                                                <label class="form-label">Total: <span id="total-precio">0</span></label>
+                                            </div>                                                                                       
+                                        </form> 
+                                        <div id="wallet_container">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                   
+                </div>               
+            </div>          
+        </div>       
+    </div>
+    
+</main>
+@section scripts {
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            toastr.success('@TempData["SuccessMessage"]');
+        </script>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            toastr.error('@TempData["ErrorMessage"]');
+        </script>
+    }
+    <script>
+        $(document).ready(function () {
+            CargarDetalleCarrito();
+           
+        });
+
+        function CargarDetalleCarrito() {
+            $.ajax({
+                url: "@Url.Action("DetalleCarrito", "Carrito")",
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    $("#productos-carrito").empty();
+
+                    var totalPrecio = 0;
+
+                    $.each(response.data, function (i, detalle) {
+                        var productoHtml = `
+                            <div class="card mb-2 card-producto" id="producto-${detalle.id}">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-2 align-self-center d-flex justify-content-center">
+                                            <img class="rounded" src="data:image;base64,${detalle.producto.img}" style="width:100px; height:100px;" />
+                                        </div>
+                                        <div class="col-sm-4 align-self-center">
+                                            <span class="font-wight-bold d-block">${detalle.producto.categoria}</span>
+                                            <span>${detalle.producto.nombre}</span>
+                                        </div>
+                                        <div class="col-sm-2 align-self-center">
+                                            <span>Subtotal</span>
+                                            <br />
+                                            <span>${detalle.subtotal}</span>
+                                        </div>
+                                        <div class="col-sm-2 align-self-center">
+                                            <div class="d-flex">
+                                                <button class="btn btn-outline-secondary btn-restar rounded-0" onclick="RestarCantidad(${detalle.id})">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <input class="form-control input-cantidad p-1 text-center rounded-0" value="${detalle.cantidad}" style="width:40px;" readonly />
+                                                <button class="btn btn-outline-secondary btn-sumar rounded-0" onclick="SumarCantidad(${detalle.id})">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 align-self-center">
+                                            <button class="btn btn-outline-danger btn-eliminar" onclick="EliminarProducto(${detalle.id})">
+                                                <i class="far fa-trash-alt"></i>Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                        $("#productos-carrito").append(productoHtml);
+
+                        // Actualizar el total del precio
+                        totalPrecio += detalle.subtotal;
+                    });
+
+                    $("#total-precio").text(totalPrecio);
+                }
+            });
+        }
+
+        // Aquí puedes agregar las funciones para restar, sumar y eliminar productos del carrito.
+        // Debes hacer las respectivas llamadas Ajax al servidor para actualizar el carrito en la base de datos.
+        function RestarCantidad(idProducto) {
+            $.ajax({
+                url: "@Url.Action("RestarCantidad", "Carrito")",
+                type: "POST",
+                data: { productoId: idProducto },
+                success: function (response) {
+                    if (response.success) {
+                        // Cantidad restada exitosamente, volver a cargar el detalle del carrito.
+                        CargarDetalleCarrito();
+                    } else {
+                        // Mostrar el mensaje de error en el toast si lo deseas.
+                        toastr.error(response.message);
+                    }
+                },
+                error: function () {
+                    // Error al restar cantidad, mostrar mensaje de error si es necesario.
+                    toastr.error("Error al restar cantidad. Por favor, inténtelo nuevamente.");
+                }
+            });
+        }
+
+        function SumarCantidad(idProducto) {
+            $.ajax({
+                url: "@Url.Action("SumarCantidad", "Carrito")",
+                type: "POST",
+                data: { productoId: idProducto },
+                success: function (response) {
+                    if (response.success) {
+                        // Sumar cantidad exitosamente, volver a cargar el detalle del carrito.
+                        CargarDetalleCarrito();
+                    } else {
+                        // Manejar el error si es necesario.
+                    }
+                }
+            });
+        }
+
+        function EliminarProducto(idProducto) {
+            $.ajax({
+                url: "@Url.Action("EliminarProducto", "Carrito")",
+                type: "POST",
+                data: { productoId: idProducto },
+                success: function (response) {
+                    if (response.success) {
+                        // Eliminar producto exitosamente, volver a cargar el detalle del carrito.
+                        CargarDetalleCarrito();
+                    } else {
+                        // Manejar el error si es necesario.
+                    }
+                }
+            });
+        }
+
+       
+    
+    </script>
+    <script>
+        async function cargarPreferencia() {
+            try {
+                const response = await $.ajax({
+                    url: '@Url.Action("Preferencia", "Carrito")',
+                    type: 'GET',
+                    dataType: 'json',
+                });
+
+                return response.preferenceId;
+            } catch (error) {
+                console.error('Error al cargar la preferencia:', error);
+                throw error;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const mp = new MercadoPago('TEST-5ee8982f-098f-4739-8706-9147e7497bb3');
+            const walletContainer = document.getElementById('wallet_container');
+
+            const preferenciaId = await cargarPreferencia();
+
+            const walletElement = document.createElement('div');
+            walletElement.id = 'wallet';
+            walletContainer.appendChild(walletElement);
+
+            console.log(walletContainer);
+
+            mp.bricks().create("wallet", "wallet_container", {
+                initialization: {
+                    preferenceId: preferenciaId,
+                },
+            });
+        });
+    </script>
+}
+

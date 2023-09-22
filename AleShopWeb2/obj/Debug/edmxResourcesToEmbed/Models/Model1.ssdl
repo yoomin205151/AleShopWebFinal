@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ALESHOPWEBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="carrito">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id_producto" Type="int" />
+    <Property Name="cantidad" Type="int" />
+    <Property Name="id_usuario" Type="int" />
+    <Property Name="preciounitario" Type="int" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="carrito_pc">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_producto" Type="int" />
+    <Property Name="cantidad" Type="int" />
+    <Property Name="preciounitario" Type="int" />
+  </EntityType>
+  <EntityType Name="categoria">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nombre" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="detalle_venta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_venta" Type="int" />
+    <Property Name="id_producto" Type="int" />
+    <Property Name="cantidad" Type="int" />
+    <Property Name="precio" Type="int" />
+  </EntityType>
+  <EntityType Name="origen">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="tipo" Type="varchar" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="producto">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nombre" Type="varchar(max)" />
+    <Property Name="activo" Type="varchar" MaxLength="15" />
+    <Property Name="stock" Type="int" />
+    <Property Name="id_categoria" Type="int" />
+    <Property Name="precio" Type="int" />
+    <Property Name="img" Type="varchar(max)" />
+  </EntityType>
+  <EntityType Name="rol">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="tipo" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="usuario">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nombre" Type="varchar" MaxLength="50" />
+    <Property Name="apellido" Type="varchar" MaxLength="50" />
+    <Property Name="email" Type="varchar" MaxLength="50" />
+    <Property Name="contrasenia" Type="varchar" MaxLength="50" />
+    <Property Name="id_rol" Type="int" />
+  </EntityType>
+  <EntityType Name="venta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fecha" Type="datetime" />
+    <Property Name="total" Type="int" />
+    <Property Name="id_origen" Type="int" />
+    <Property Name="id_usuario" Type="int" />
+  </EntityType>
+  <Association Name="FK_carrito_pc_producto">
+    <End Role="producto" Type="Self.producto" Multiplicity="0..1" />
+    <End Role="carrito_pc" Type="Self.carrito_pc" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="carrito_pc">
+        <PropertyRef Name="id_producto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_carrito_producto">
+    <End Role="producto" Type="Self.producto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="carrito">
+        <PropertyRef Name="id_producto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_carrito_usuario">
+    <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
+    <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="carrito">
+        <PropertyRef Name="id_usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_detalle_venta_producto1">
+    <End Role="producto" Type="Self.producto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="detalle_venta" Type="Self.detalle_venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="detalle_venta">
+        <PropertyRef Name="id_producto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_detalle_venta_venta">
+    <End Role="venta" Type="Self.venta" Multiplicity="0..1" />
+    <End Role="detalle_venta" Type="Self.detalle_venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="venta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="detalle_venta">
+        <PropertyRef Name="id_venta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_producto_categoria">
+    <End Role="categoria" Type="Self.categoria" Multiplicity="0..1" />
+    <End Role="producto" Type="Self.producto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="categoria">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="producto">
+        <PropertyRef Name="id_categoria" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_usuario_rol">
+    <End Role="rol" Type="Self.rol" Multiplicity="0..1" />
+    <End Role="usuario" Type="Self.usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="rol">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="usuario">
+        <PropertyRef Name="id_rol" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_venta_origen">
+    <End Role="origen" Type="Self.origen" Multiplicity="0..1" />
+    <End Role="venta" Type="Self.venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="origen">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="venta">
+        <PropertyRef Name="id_origen" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_venta_usuario">
+    <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
+    <End Role="venta" Type="Self.venta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="venta">
+        <PropertyRef Name="id_usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="ALESHOPWEBModelStoreContainer">
+    <EntitySet Name="carrito" EntityType="Self.carrito" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="carrito_pc" EntityType="Self.carrito_pc" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="categoria" EntityType="Self.categoria" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="detalle_venta" EntityType="Self.detalle_venta" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="origen" EntityType="Self.origen" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="producto" EntityType="Self.producto" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="rol" EntityType="Self.rol" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="usuario" EntityType="Self.usuario" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="venta" EntityType="Self.venta" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_carrito_pc_producto" Association="Self.FK_carrito_pc_producto">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="carrito_pc" EntitySet="carrito_pc" />
+    </AssociationSet>
+    <AssociationSet Name="FK_carrito_producto" Association="Self.FK_carrito_producto">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="carrito" EntitySet="carrito" />
+    </AssociationSet>
+    <AssociationSet Name="FK_carrito_usuario" Association="Self.FK_carrito_usuario">
+      <End Role="usuario" EntitySet="usuario" />
+      <End Role="carrito" EntitySet="carrito" />
+    </AssociationSet>
+    <AssociationSet Name="FK_detalle_venta_producto1" Association="Self.FK_detalle_venta_producto1">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="detalle_venta" EntitySet="detalle_venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_detalle_venta_venta" Association="Self.FK_detalle_venta_venta">
+      <End Role="venta" EntitySet="venta" />
+      <End Role="detalle_venta" EntitySet="detalle_venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_producto_categoria" Association="Self.FK_producto_categoria">
+      <End Role="categoria" EntitySet="categoria" />
+      <End Role="producto" EntitySet="producto" />
+    </AssociationSet>
+    <AssociationSet Name="FK_usuario_rol" Association="Self.FK_usuario_rol">
+      <End Role="rol" EntitySet="rol" />
+      <End Role="usuario" EntitySet="usuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_venta_origen" Association="Self.FK_venta_origen">
+      <End Role="origen" EntitySet="origen" />
+      <End Role="venta" EntitySet="venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_venta_usuario" Association="Self.FK_venta_usuario">
+      <End Role="usuario" EntitySet="usuario" />
+      <End Role="venta" EntitySet="venta" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

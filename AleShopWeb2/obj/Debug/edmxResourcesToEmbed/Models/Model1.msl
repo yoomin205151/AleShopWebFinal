@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ALESHOPWEBModelStoreContainer" CdmEntityContainer="ALESHOPWEBEntities9">
+    <EntitySetMapping Name="carrito">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.carrito">
+        <MappingFragment StoreEntitySet="carrito">
+          <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+          <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+          <ScalarProperty Name="preciounitario" ColumnName="preciounitario" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="carrito_pc">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.carrito_pc">
+        <MappingFragment StoreEntitySet="carrito_pc">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+          <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+          <ScalarProperty Name="preciounitario" ColumnName="preciounitario" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="categoria">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.categoria">
+        <MappingFragment StoreEntitySet="categoria">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="detalle_venta">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.detalle_venta">
+        <MappingFragment StoreEntitySet="detalle_venta">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="id_venta" ColumnName="id_venta" />
+          <ScalarProperty Name="id_producto" ColumnName="id_producto" />
+          <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+          <ScalarProperty Name="precio" ColumnName="precio" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="origen">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.origen">
+        <MappingFragment StoreEntitySet="origen">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="producto">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.producto">
+        <MappingFragment StoreEntitySet="producto">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="activo" ColumnName="activo" />
+          <ScalarProperty Name="stock" ColumnName="stock" />
+          <ScalarProperty Name="id_categoria" ColumnName="id_categoria" />
+          <ScalarProperty Name="precio" ColumnName="precio" />
+          <ScalarProperty Name="img" ColumnName="img" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="rol">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.rol">
+        <MappingFragment StoreEntitySet="rol">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.sysdiagrams">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="usuario">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.usuario">
+        <MappingFragment StoreEntitySet="usuario">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="apellido" ColumnName="apellido" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="contrasenia" ColumnName="contrasenia" />
+          <ScalarProperty Name="id_rol" ColumnName="id_rol" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="venta">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.venta">
+        <MappingFragment StoreEntitySet="venta">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="total" ColumnName="total" />
+          <ScalarProperty Name="id_origen" ColumnName="id_origen" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="ALESHOPWEBModel.Store.sp_alterdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="ALESHOPWEBModel.Store.sp_creatediagram" />
+    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="ALESHOPWEBModel.Store.sp_dropdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="ALESHOPWEBModel.Store.sp_helpdiagramdefinition">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="ALESHOPWEBModel.sp_helpdiagramdefinition_Result">
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="ALESHOPWEBModel.Store.sp_helpdiagrams">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="ALESHOPWEBModel.sp_helpdiagrams_Result">
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="ALESHOPWEBModel.Store.sp_renamediagram" />
+    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="ALESHOPWEBModel.Store.sp_upgraddiagrams" />
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,208 @@
+﻿@using AleShopWeb2.Models
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALESHOP</title>
+    @Styles.Render("~/Content/css")
+    @* @Scripts.Render("~/bundles/modernizr")*@
+</head>
+<body>
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="@Url.Action("Index","Home")">AleShop</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="@Url.Action("Producto", "Producto")" method="GET">
+            <div class="input-group">
+                <input name="nombreProducto" class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <form class="d-flex" action="@Url.Action("Carrito", "Carrito")">
+                        <button class="btn btn-outline-light" type="submit" style="background-color: transparent;">
+                            <i class="fas fa-shopping-cart me-1 text-white"></i>
+                            <span id="cantidad-productos-carrito" class="badge bg-light text-black ms-1 rounded-pill">0</span>
+                        </button>
+                    </form>
+                </li>
+                // Mostrar el menú de usuario después de iniciar sesión
+                <li class="nav-item dropdown" style="margin-left:5px">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw text-white"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="@Url.Action("ListarVentasUsuario","Venta")">Mis Compras</a></li>
+                        <li><a class="dropdown-item" href="#!">Cuenta</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Logout","Cuenta")">Cerrar Sesion</a></li>
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    @Html.ActionLink("Iniciar Sesión", "Index", "Cuenta", null, new { @class = "nav-link" })
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Main</div>
+                        <a class="nav-link" href="@Url.Action("Index","Home")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                            Inicio
+                        </a>
+                        <a class="nav-link" href="@Url.Action("Producto","Producto")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            Productos
+                        </a>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                Categorias
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 1 })">Mouse</a>
+                                <a class="nav-link" href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 2 })">Teclado</a>
+                                <a class="nav-link" href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 3 })">Monitor</a>
+                                <a class="nav-link" href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 4 })">Auricular</a>
+                                <a class="nav-link" href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 5 })">Pad</a>
+                                <a class="nav-link" href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 6 })">Gabinete</a>
+                            </nav>
+                        </div> 
+                        @if (User.Identity.IsAuthenticated && Session["usuario"] is usuario user && (user.id_rol == 1 || user.id_rol == 1002))
+                        {
+                            <div class="sb-sidenav-menu-heading">ABM</div>
+                        <a class="nav-link" href="@Url.Action("ABMProducto","Producto")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            Producto
+                        </a>
+                        <a class="nav-link" href="@Url.Action("Usuarios","Usuario")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            Usuario
+                        </a>
+                        }
+                    </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        @if (User.Identity.IsAuthenticated && Session["usuario"] != null)
+                        {
+                            var usuario = Session["usuario"] as usuario;
+                            <div class="small">Estas Iniciado Sesion como:</div>
+                            <div>@usuario.email</div>
+                        }
+                    </div>
+
+
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        @RenderBody()
+                    </div>
+                </main>
+                
+                <footer class="text-white text-center text-lg-start" style="background-color: #23242a;">
+                    <!-- Grid container -->
+                    <div class="container p-4">
+                        <!--Grid row-->
+                        <div class="row mt-4">
+                            <!--Grid column-->
+                            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                                <h5 class="text-uppercase mb-4">Sobre Nosotros</h5>
+
+                                <p>
+                                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+                                    voluptatum deleniti atque corrupti.
+                                </p>
+
+                                <p>
+                                    Blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas
+                                    molestias.
+                                </p>
+
+                                <div class="mt-4">
+                                    
+                                    <a type="button" href="#" class="btn btn-floating btn-warning "><i class="fab fa-facebook-f fa-lg"></i></a>
+                                    
+                                    <a type="button" href="#" class="btn btn-floating btn-warning "><i class="fab fa-instagram "></i></a>
+                                    
+                                    <a type="button" href="#" class="btn btn-floating btn-warning "><i class="fab fa-twitter " ></i></a>
+                                                                       
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                                <h5 class="text-uppercase mb-4 pb-1">Contacto</h5>
+
+                                <ul class="fa-ul" style="margin-left: 1.65em;">
+                                    <li class="mb-3">
+                                        <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">New York, NY 10012, US</span>
+                                    </li>
+                                    <li class="mb-3">
+                                        <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">info@example.com</span>
+                                    </li>
+                                    <li class="mb-3">
+                                        <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">+ 01 234 567 88</span>
+                                    </li>
+                                    <li class="mb-3">
+                                        <span class="fa-li"><i class="fas fa-print"></i></span><span class="ms-2">+ 01 234 567 89</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--Grid column-->
+                            <!--Grid column-->
+                            <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                                <h5 class="text-uppercase mb-4">Horarios</h5>
+
+                                <table class="table text-center text-white">
+                                    <tbody class="font-weight-normal">
+                                        <tr>
+                                            <td>Mon - Thu:</td>
+                                            <td>8am - 9pm</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fri - Sat:</td>
+                                            <td>8am - 1am</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sunday:</td>
+                                            <td>9am - 10pm</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--Grid column-->
+                        </div>
+                        <!--Grid row-->
+                    </div>
+                    <!-- Grid container -->
+                    <!-- Copyright -->
+                    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                        @DateTime.Now.Year - Mi aplicación ASP.NET
+                    </div>
+                    <!-- Copyright -->
+                </footer>              
+            </div>
+        </div>
+
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/complementos")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+    </body>
+    </html>

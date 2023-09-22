@@ -1,0 +1,85 @@
+﻿@model List<AleShopWeb2.Models.DetalleVentaConProducto>
+
+@{
+    ViewBag.Title = "DetalleVenta";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div class="me-2">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="ms-2 mt-2">Detalle Compra</h5>
+                                    <a class="btn btn-primary" href="@Url.Action("ListarVentasUsuario", "Venta")">
+                                        <i class="fas fa-arrow-left"></i> Volver
+                                    </a>
+                                </div>
+                                <hr class="mt-2 mb-2">
+
+                                <div id="productos-carrito">                                    
+                                    <!-- Detalles de los productos asociados a la venta -->
+                                    @foreach (var detalleVentas in Model)
+                                    {
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-2 align-self-center d-flex justify-content-center">
+                                                                <!-- Mostrar la imagen del producto -->
+                                                                <img class="rounded" src="data:image;base64,@detalleVentas.Producto.img" style="width:100px; height:100px;" />
+                                                            </div>
+                                                            <div class="col-sm-4 align-self-center">
+                                                                <span class="font-wight-bold d-block">@detalleVentas.Producto.categoria.nombre</span>
+                                                                <span>@detalleVentas.Producto.nombre</span>
+                                                            </div>
+                                                            
+                                                            <div class="col-sm-2 align-self-center">
+                                                                <span>Cantidad</span>
+                                                                <br />
+                                                                <span>@detalleVentas.DetalleVenta.cantidad</span>
+                                                            </div>
+                                                            <div class="col-sm-2 align-self-center">
+                                                                <span>Precio Unitario</span>
+                                                                <br />
+                                                                <span>@detalleVentas.DetalleVenta.precio</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="card">
+                                <div class="card-body bg-light">
+                                    <h5 class="card-title">Resumen</h5>
+                                    <form>
+                                        <div class="mb-2">
+                                            <label class="form-label">
+                                                Total: <span id="total-precio">
+                                                    @if (Model.Any())
+                                                    {
+                                                        @Model.FirstOrDefault().DetalleVenta.venta.total
+                                                    }
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

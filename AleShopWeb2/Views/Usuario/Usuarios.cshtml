@@ -1,0 +1,317 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #tabla {
+        margin: 0 auto;
+        text-align: center;
+    }
+</style>
+
+<div class="card" style="margin-top:18px">
+    <div class="card-header">
+        <i class="fas fa-users me-1"></i>Lista De Usuarios
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#FormModal" onclick="abrirModal(null)">Crear Nuevo</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <table id="tabla" class="display cell-border" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Contrasenia</th>
+                    <th>Rol</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Crear -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body g-2">
+                <input type="hidden" id="txtid" name="id" value="0" />
+                <form id="usuarioForm" method="post">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="txtnombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="txtnombre" name="nombre">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtapellido" class="form-label">Apellido</label>
+                            <input type="text" class="form-control" id="txtapellido" name="apellido">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtmail" class="form-label">Mail</label>
+                            <input type="email" class="form-control" id="txtmail" name="email" placeholder="name@example.com">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="txtcontrasenia" class="form-label">Contrasenia</label>
+                            <input type="password" class="form-control" id="txtcontrasenia" name="contrasenia">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="id_rol" class="form-label">Rol</label>
+                            <select class="form-select" aria-label="Default select example" id="txtidrol" name="id_rol">
+                                <option selected>Elija un rol</option>
+                                @foreach (var rol in ViewBag.Roles)
+                                {
+                                    <option value="@rol.id">@rol.tipo</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button id="btnGuardarCambios" type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Agregar el código de los mensajes toast -->
+<div id="toastContainer" style="position: fixed; top: 16px; right: 16px; z-index: 9999;"></div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Inicializar DataTables
+            var tabla = $('#tabla').DataTable({
+                responsive: true,
+                ordering: false,
+                ajax: {
+                    url: '@Url.Action("ListarUsuarios", "Usuario")',
+                    type: 'GET',
+                    dataType: 'json',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'nombre' },
+                    { data: 'apellido' },
+                    { data: 'email' },
+                    { data: 'contrasenia' },
+                    { data: 'id_rol' },
+                    {
+                        defaultContent: '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
+                            '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash"></i></button>',
+                        orderable: false,
+                        searchable: false,
+                        width: "60px"
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json'
+                }
+            });
+
+            function abrirModal(json) {
+                $("#txtid").val(0);
+                $("#txtnombre").val("");
+                $("#txtapellido").val("");
+                $("#txtmail").val("");
+                $("#txtcontrasenia").val("");
+                $("#txtidrol").val("");
+
+                if (json != null) {
+                    $("#txtid").val(json.id);
+                    $("#txtnombre").val(json.nombre);
+                    $("#txtapellido").val(json.apellido);
+                    $("#txtmail").val(json.email);
+                    $("#txtcontrasenia").val(json.contrasenia);
+                    $("#txtidrol").val(json.id_rol);
+                }
+
+                $("#FormModal").modal("show");
+            }
+
+            // Mostrar mensaje toast
+            function showToast(message, type) {
+                var toastContainer = $("#toastContainer");
+                var toastClass = "";
+
+                switch (type) {
+                    case "success":
+                        toastClass = "bg-success text-white";
+                        break;
+                    case "error":
+                        toastClass = "bg-danger text-white";
+                        break;
+                }
+
+                var toast = `
+                    <div class="toast show ${toastClass}" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-body">
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                toastContainer.append(toast);
+
+                $(".toast").toast("show");
+                $(".toast").on("hidden.bs.toast", function () {
+                    $(this).remove();
+                });
+            }
+
+            // Evento de clic para el botón de editar
+            $("#tabla tbody").on("click", ".btn-editar", function () {
+                var filaSeleccionada = $(this).closest("tr");
+                var data = tabla.row(filaSeleccionada).data();
+                abrirModal(data);
+            });
+
+            // Evento de clic para el botón de eliminar
+            $("#tabla tbody").on("click", ".btn-eliminar", function () {
+                var filaSeleccionada = $(this).closest("tr");
+                var data = tabla.row(filaSeleccionada).data();
+                var idUsuario = data.id;
+
+                if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+                    $.post("@Url.Action("EliminarUsuario", "Usuario")", { id: idUsuario })
+                        .done(function (response) {
+                            showToast("Usuario eliminado exitosamente.", "success");
+                            tabla.row(filaSeleccionada).remove().draw(); // Eliminar la fila de la tabla
+                        })
+                        .fail(function (error) {
+                            showToast("Ha ocurrido un error al eliminar el usuario.", "error");
+                            console.error(error);
+                        });
+                }
+            });
+
+            $("#btnGuardarCambios").click(function () {
+                var usuario = {
+                    id: $("#txtid").val(),
+                    nombre: $("#txtnombre").val(),
+                    apellido: $("#txtapellido").val(),
+                    email: $("#txtmail").val(),
+                    contrasenia: $("#txtcontrasenia").val(),
+                    id_rol: $("#txtidrol").val()
+                };
+
+                var requestUrl = usuario.id == 0 ? "@Url.Action("CrearUsuario", "Usuario")" : "@Url.Action("ModificarUsuario", "Usuario")";
+
+                $.post(requestUrl, usuario)
+                    .done(function (response) {
+                        tabla.ajax.reload();
+                        $("#FormModal").modal("hide");
+                    })
+                    .fail(function (error) {
+                        console.error(error);
+                    });
+            });
+            function showToast(message, type) {
+                // Código del showToast ...
+                var toastContainer = $("#toastContainer");
+                var toastClass = "";
+
+                switch (type) {
+                    case "success":
+                        toastClass = "bg-success text-white";
+                        break;
+                    case "error":
+                        toastClass = "bg-danger text-white";
+                        break;
+                }
+
+                var toast = `
+                    <div class="toast show ${toastClass}" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-body">
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                toastContainer.append(toast);
+
+                $(".toast").toast("show");
+                $(".toast").on("hidden.bs.toast", function () {
+                    $(this).remove();
+                });
+            }
+
+            // Función para mostrar los mensajes toast del TempData
+            function mostrarMensajesToast() {
+                var successMessage = '@TempData["SuccessMessage"]';
+                var errorMessage = '@TempData["ErrorMessage"]';
+
+                if (successMessage) {
+                    showToast(successMessage, "success");
+                }
+
+                if (errorMessage) {
+                    showToast(errorMessage, "error");
+                }
+            }
+
+            // Evento al cargar la página
+            $(document).ready(function () {
+                // Mostrar mensajes toast del TempData al cargar la página
+                mostrarMensajesToast();
+
+                // ... Código previo ...
+            });
+
+            // Evento de envío del formulario de creación/edición
+            $("#usuarioForm").submit(function (event) {
+                event.preventDefault();
+                var form = $(this);
+                var url = form.attr("action");
+                var method = form.attr("method");
+                var formData = form.serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    success: function (response) {
+                        showToast("Usuario creado/modificado exitosamente.", "success");
+                        tabla.ajax.reload(); // Recargar la tabla de usuarios
+                        $("#FormModal").modal("hide"); // Ocultar el modal
+                    },
+                    error: function (error) {
+                        showToast("Ha ocurrido un error al crear/modificar el usuario.", "error");
+                        console.error(error);
+                    }
+                });
+            });
+
+            // Reiniciar campos al cerrar el modal
+            $("#FormModal").on("hidden.bs.modal", function () {
+                $("#usuarioForm")[0].reset();
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+

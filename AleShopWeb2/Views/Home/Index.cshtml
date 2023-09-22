@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+<main>
+    <!-- Carrusel -->
+    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" style="margin-top:15px; margin-bottom:15px">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://goldentechstore.com.ar/wp-content/uploads/215-31-12-2022-10-12-37-goldentech-1600x340-1-6481e050e190f.webp" class="d-block w-100" alt="imagen1">
+            </div>
+            <div class="carousel-item">
+                <img src="https://goldentechstore.com.ar/wp-content/uploads/215-12-10-2022-10-10-00-goldentech-aorus-familia-mobile-1600x340-1-6481e054a94bf.webp" class="d-block w-100" alt="imagen2">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Categorías destacadas -->
+    <section class="section" style="margin-bottom:15px">
+        <h2 class="text-center">Categorías destacadas</h2>
+        <div class="row text-center" style="justify-content: center;">
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                <a href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 1 })">
+                    <img src="https://imagedelivery.net/coazEmlpsaEeLgEQn76AbA/772d7f54-7070-4e7f-9b3b-02234faf8b00/public" alt="mouse" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                <a href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 2 })">
+                    <img src="https://imagedelivery.net/coazEmlpsaEeLgEQn76AbA/8f3550ad-b89d-45b7-526f-cf6b9cabf100/public" alt="teclado" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                <a href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 4 })">
+                    <img src="https://imagedelivery.net/coazEmlpsaEeLgEQn76AbA/852d9f0d-29a9-4c5f-cf81-1ecbf84e8800/public" alt="auricular" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                <a href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 3 })">
+                    <img src="https://imagedelivery.net/coazEmlpsaEeLgEQn76AbA/dc197808-35d9-4240-4bd1-64b3f08f6900/public" alt="monitor" class="img-fluid">
+                </a>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                <a href="@Url.Action("Producto", "Producto", new { area = "", categoriaId = 5 })">
+                    <img src="https://imagedelivery.net/coazEmlpsaEeLgEQn76AbA/d6a7090a-878b-434d-7ef2-c3ceabdb5c00/public" alt="pad" class="img-fluid">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="margin-bottom:15px;">
+        <h2 class="text-center">Los más buscados</h2>
+        <div class="row text-center" style="justify-content: center; margin:0 auto;">
+            <div class="card col-md-3">
+                <img src="https://www.fullh4rd.com.ar/img/productos/14/mouse-gamer-gx-gaming-xg200-usb-black-g5-0.jpg" class="card-img-top" alt="Producto 1">
+                <div class="card-body">
+                    <h5 class="card-title">MOUSE EVGA GAMING MOUSE V2</h5>
+                    <p class="card-text">Precio: $16410</p>
+                </div>
+                <div class="card-footer" style="background-color: #ffffff;">
+                    @Html.ActionLink("Ir a producto", "Producto", "Producto", new { area = "" }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+            <div class="card col-md-3">
+                <img src="https://www.fullh4rd.com.ar/img/productos/8/teclado-aureox-battletag-gaming-gk400-0.jpg" class="card-img-top" alt="Producto 2">
+                <div class="card-body">
+                    <h5 class="card-title">TECLADO GAMER EVGA Z12 RGB COLOR MEMBRANE SP</h5>
+                    <p class="card-text">Precio: $16486</p>
+                </div>
+                <div class="card-footer" style="background-color: #ffffff;">
+                    @Html.ActionLink("Ir a producto", "Producto", "Producto", new { area = "" }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+            <div class="card col-md-3">
+                <img src="https://www.fullh4rd.com.ar/img/productos/28/auriculares-syx-ps5-csps561-blanco-35mm-playstation-0.jpg" class="card-img-top" alt="Producto 3">
+                <div class="card-body">
+                    <h5 class="card-title">AURICULARES THERMALTAKE GAMING</h5>
+                    <p class="card-text">Precio: $16770</p>
+                </div>
+                <div class="card-footer" style="background-color: #ffffff;">
+                    @Html.ActionLink("Ir a producto", "Producto", "Producto", new { area = "" }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+            <div class="card col-md-3">
+                <img src="https://www.fullh4rd.com.ar/img/productos/18/monitor-22-philips-221v877-led-fhd-vga-hdmi-0.jpg" class="card-img-top" alt="Producto 4">
+                <div class="card-body">
+                    <h5 class="card-title">MONITOR 22" VIEWSONIC VA2215-H LED FHD HDMI</h5>
+                    <p class="card-text">Precio: $64590</p>
+                </div>
+                <div class="card-footer" style="background-color: #ffffff;">
+                    @Html.ActionLink("Ir a producto", "Producto", "Producto", new { area = "" }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Publicidad -->
+    <section class="section" style="margin-bottom:15px">
+        <div class="row">
+            <img src="https://pcexpress.pe/media/wysiwyg/imageslider/MSI_PC_1920X500.jpg" alt="Publicidad 1">
+        </div>
+    </section>
+</main>

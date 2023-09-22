@@ -1,0 +1,286 @@
+﻿
+@model IEnumerable<AleShopWeb2.Models.producto>
+@{
+    ViewBag.Title = "Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var categoriaId = ViewBag.CategoriaId ?? 0;
+}
+<style>
+
+    #toast-container {
+        z-index: 9999;
+    }
+</style>
+
+<body class="d-flex flex-column min-vh-100 ">
+    <header class="bg-dark py-5" style="margin-top:18px">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shop in style</h1>
+                <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+            </div>
+        </div>
+    </header>
+    <!-- Section-->
+    <section>
+        <div class="container-fluid px-6 my-5">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="row mb-3">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header bg-dark text-white">
+                                    Categorias
+                                </div>
+                                <div id="contenedor-categoria" class="card-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            dsad
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12">
+                            <div class="d-grid gap-2">
+                                <button id="btnfiltro" class="btn btn-outline-dark btn-block" type="button">
+                                    <i class="fas fa-search"></i>Aplicar Filtro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <div id="contenedor_producto" class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                        @foreach (var producto in Model)
+                        {
+                            <div class="col mb-5">
+                                <div class="card h-100">
+                                    <!-- Product image -->
+                                    <img class="card-img-top" src="data:image;base64,@(Convert.ToBase64String(Convert.FromBase64String(producto.img)))" alt="..." />
+                                    <!-- Product details -->
+                                    <div class="card-body p-4" style=" padding: 0.5rem !important">
+                                        <div class="text-center">
+                                            <!-- Product name -->
+                                            <h5 class="fw-bolder">@producto.nombre.ToUpper()</h5>
+                                            <!-- Product price -->
+                                            <p>Precio: $@producto.precio</p>
+                                            <p>Categoria: @producto.categoria.nombre</p>
+                                            <p>Stock: @producto.stock</p>
+                                        </div>
+                                    </div>
+                                    <!-- Product actions -->
+                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent" style="margin:auto">
+                                        <button class="btn btn-dark mt-auto" onclick="agregarAlCarrito(this)" data-id="@producto.id" style="margin:auto;">Agregar Carrito</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="padding:0px">
+        <div id="toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <!-- Aquí se mostrará el mensaje del toast -->
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center" style="margin-bottom:20px">
+        @if (ViewBag.PaginaActual > 1)
+        {
+            <a href="@Url.Action("Producto", new { categoriaId = ViewBag.CategoriaId, nombreProducto = ViewBag.NombreProducto, page = ViewBag.PaginaActual - 1 })" class="btn btn-dark">Anterior</a>
+        }
+
+        @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+        {
+            if (i == ViewBag.PaginaActual)
+            {
+                <span class="btn btn-primary">@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action("Producto", new { categoriaId = ViewBag.CategoriaId, nombreProducto = ViewBag.NombreProducto, page = i })" class="btn btn-outline-primary">@i</a>
+            }
+        }
+
+        @if (ViewBag.PaginaActual < ViewBag.TotalPaginas)
+        {
+            <a href="@Url.Action("Producto", new { categoriaId = ViewBag.CategoriaId, nombreProducto = ViewBag.NombreProducto, page = ViewBag.PaginaActual + 1 })" class="btn btn-dark">Siguiente</a>
+        }
+    </div>
+
+</body>
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+            <script>
+                var toastMessage = '@TempData["SuccessMessage"]';
+                toastr.success(toastMessage);
+                setTimeout(function () {
+                    $(".toast").toast("hide");
+                }, 1000);
+            </script>
+        </text>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <text>
+            <script>
+                var toastMessage = '@TempData["ErrorMessage"]';
+                toastr.error(toastMessage);
+                setTimeout(function () {
+                    $(".toast").toast("hide");
+                }, 1000);
+            </script>
+        </text>
+    }
+
+<script>
+
+        $(document).ready(function () {
+            MostrarCategoria();
+
+            $("#btnfiltro").click(function () {
+                MostrarProductos();
+            });
+
+        })
+
+        function agregarAlCarrito(button) {
+            var productoId = $(button).data("id");
+            $.ajax({
+                url: "@Url.Action("AgregarAlCarrito", "Carrito")",
+                type: "POST",
+                data: { productoId: productoId },
+                success: function (response) {
+                    if (response.success) {
+                        // Establecer el mensaje de éxito en TempData
+                        var toastMessage = "Producto agregado al carrito correctamente.";
+                        toastr.success(toastMessage);
+                        setTimeout(function () {
+                            $(".toast").toast("hide");
+                        }, 1000);
+
+                        // Actualizar el número de productos en el carrito
+                        var cantidadProductos = parseInt($("#cantidad-productos-carrito").text()) + 1;
+                        $("#cantidad-productos-carrito").text(cantidadProductos);
+                    } else {
+                        // Establecer el mensaje de error en TempData
+                        var toastMessage = response.message;
+                        toastr.error(toastMessage);
+                        setTimeout(function () {
+                            $(".toast").toast("hide");
+                        }, 1000);
+                    }
+                },
+                error: function () {
+                    // Error al agregar el producto al carrito.
+                    // Establecer el mensaje de error en TempData
+                    var toastMessage = "Error al agregar el producto al carrito.";
+                    toastr.error(toastMessage);
+                    setTimeout(function () {
+                        $(".toast").toast("hide");
+                    }, 1000);
+                }
+            });
+        }
+
+
+        function RealizarPago() {
+        $.ajax({
+            url: "@Url.Action("RealizarPago", "Carrito")",
+            type: "POST",
+            success: function (response) {
+                if (response.success) {
+                    // Pago realizado exitosamente, mostrar el mensaje de éxito en el toast
+                    toastr.success("Compra realizada con éxito.");
+                    // Redireccionar a la página de inicio, por ejemplo.
+                    window.location.href = "@Url.Action("Producto", "Producto")";
+                } else {
+                    // Mostrar el mensaje de error en el toast
+                    toastr.error("Error al realizar el pago. Por favor, inténtelo nuevamente.");
+                }
+            },
+            error: function () {
+                // Error al realizar la solicitud de pago.
+                toastr.error("Error al realizar el pago. Por favor, inténtelo nuevamente.");
+            }
+        });
+    }
+        function MostrarCategoria() {
+        jQuery.ajax({
+            url: "@Url.Action("ListarCategoria", "Producto")",
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#contenedor-categoria").empty(); // Vaciar el contenedor antes de agregar las nuevas categorías
+
+                $("<div>").addClass("form-check").append(
+                    $("<input>").addClass("form-check-input").attr({ type: "radio", name: "categoria", value: "0", id: "cx", checked: "checked" }),
+                    $("<label>").addClass("form-check-label").text("Todos").attr({ for: "cx" })
+                ).appendTo("#contenedor-categoria");
+
+                $.each(response.data, function (i, element) {
+                    $("<div>").addClass("form-check").append(
+                        $("<input>").addClass("form-check-input").attr({ type: "radio", name: "categoria", value: element.id, id: "c" + i }),
+                        $("<label>").addClass("form-check-label").text(element.nombre).attr({ for: "c" + i })
+                    ).appendTo("#contenedor-categoria");
+                });
+            }
+        });
+        }
+
+        function MostrarProductos() {
+        var categoriaSeleccionada = $("input[name='categoria']:checked").val();
+        var url = "@Url.Action("ListarProductoActivo", "Producto")" + "?categoriaId=" + categoriaSeleccionada;
+
+        jQuery.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#contenedor_producto").empty();
+
+                $.each(response.data, function (i, element) {
+                    var cardHtml = `
+                        <div class="col mb-5">
+                            <div class="card h-100">
+                                <img class="card-img-top" src="data:image;base64,${element.img}" alt="..." />
+                                <div class="card-body p-4" style=" padding: 0.5rem !important">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">${element.nombre.toUpperCase()}</h5>
+                                        <p>Precio: $${element.precio}</p>
+                                        <p>Categoria: ${element.categoria}</p>
+                                        <p>Stock: ${element.stock}</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent " style="margin:auto">
+                                    <button class="btn btn-dark mt-auto" onclick="agregarAlCarrito(this)" data-id="${element.id}" style="margin:auto;">Agregar Carrito</button>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    $("#contenedor_producto").append(cardHtml);
+                });
+            }
+        });
+    }
+</script>
+}

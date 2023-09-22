@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+<main>
+    <div id="wallet_container">
+
+    </div>
+</main>
+@section scripts{
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script>
+        async function cargarPreferencia() {
+            try {
+                const response = await $.ajax({
+                    url: '@Url.Action("Preferencia", "Venta")',
+                    type: 'GET',
+                    dataType: 'json',
+                });
+
+                return response.preferenceId;
+            } catch (error) {
+                console.error('Error al cargar la preferencia:', error);
+                throw error;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const mp = new MercadoPago('TEST-a8b5831d-b095-4c9f-9dcb-09f306fa3bd9');
+            const walletContainer = document.getElementById('wallet_container');
+
+            const preferenciaId = await cargarPreferencia();
+
+            const walletElement = document.createElement('div');
+            walletElement.id = 'wallet';
+            walletContainer.appendChild(walletElement);
+
+            console.log(preferenciaId);
+
+            mp.bricks().create("wallet", "wallet_container", {
+                initialization: {
+                    preferenceId: preferenciaId,
+                },
+            });
+        });
+    </script>
+}
