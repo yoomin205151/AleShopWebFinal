@@ -48,14 +48,6 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="tipo" Type="varchar" MaxLength="30" />
         </EntityType>
-        <EntityType Name="preference_id">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="id_preference" Type="varchar" MaxLength="500" />
-          <Property Name="id_usuario" Type="int" />
-        </EntityType>
         <EntityType Name="producto">
           <Key>
             <PropertyRef Name="id" />
@@ -170,18 +162,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_preference_id_usuario">
-          <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
-          <End Role="preference_id" Type="Self.preference_id" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="usuario">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="preference_id">
-              <PropertyRef Name="id_usuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_producto_categoria">
           <End Role="categoria" Type="Self.categoria" Multiplicity="0..1" />
           <End Role="producto" Type="Self.producto" Multiplicity="*" />
@@ -267,7 +247,6 @@
           <EntitySet Name="categoria" EntityType="Self.categoria" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="detalle_venta" EntityType="Self.detalle_venta" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="origen" EntityType="Self.origen" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="preference_id" EntityType="Self.preference_id" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="producto" EntityType="Self.producto" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="rol" EntityType="Self.rol" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -292,10 +271,6 @@
           <AssociationSet Name="FK_detalle_venta_venta" Association="Self.FK_detalle_venta_venta">
             <End Role="venta" EntitySet="venta" />
             <End Role="detalle_venta" EntitySet="detalle_venta" />
-          </AssociationSet>
-          <AssociationSet Name="FK_preference_id_usuario" Association="Self.FK_preference_id_usuario">
-            <End Role="usuario" EntitySet="usuario" />
-            <End Role="preference_id" EntitySet="preference_id" />
           </AssociationSet>
           <AssociationSet Name="FK_producto_categoria" Association="Self.FK_producto_categoria">
             <End Role="categoria" EntitySet="categoria" />
@@ -369,15 +344,6 @@
           <Property Name="tipo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="venta" Relationship="Self.FK_venta_origen" FromRole="origen" ToRole="venta" />
         </EntityType>
-        <EntityType Name="preference_id">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="id_preference" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="id_usuario" Type="Int32" />
-          <NavigationProperty Name="usuario" Relationship="Self.FK_preference_id_usuario" FromRole="preference_id" ToRole="usuario" />
-        </EntityType>
         <EntityType Name="producto">
           <Key>
             <PropertyRef Name="id" />
@@ -423,7 +389,6 @@
           <Property Name="contrasenia" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="id_rol" Type="Int32" />
           <NavigationProperty Name="carrito" Relationship="Self.FK_carrito_usuario" FromRole="usuario" ToRole="carrito" />
-          <NavigationProperty Name="preference_id" Relationship="Self.FK_preference_id_usuario" FromRole="usuario" ToRole="preference_id" />
           <NavigationProperty Name="rol" Relationship="Self.FK_usuario_rol" FromRole="usuario" ToRole="rol" />
           <NavigationProperty Name="venta" Relationship="Self.FK_venta_usuario" FromRole="usuario" ToRole="venta" />
         </EntityType>
@@ -528,18 +493,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_preference_id_usuario">
-          <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
-          <End Role="preference_id" Type="Self.preference_id" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="usuario">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="preference_id">
-              <PropertyRef Name="id_usuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_usuario_rol">
           <End Role="rol" Type="Self.rol" Multiplicity="0..1" />
           <End Role="usuario" Type="Self.usuario" Multiplicity="*" />
@@ -564,13 +517,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ALESHOPWEBEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ALESHOPWEBEntities9" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="carrito" EntityType="Self.carrito" />
           <EntitySet Name="carrito_pc" EntityType="Self.carrito_pc" />
           <EntitySet Name="categoria" EntityType="Self.categoria" />
           <EntitySet Name="detalle_venta" EntityType="Self.detalle_venta" />
           <EntitySet Name="origen" EntityType="Self.origen" />
-          <EntitySet Name="preference_id" EntityType="Self.preference_id" />
           <EntitySet Name="producto" EntityType="Self.producto" />
           <EntitySet Name="rol" EntityType="Self.rol" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
@@ -603,10 +555,6 @@
           <AssociationSet Name="FK_venta_origen" Association="Self.FK_venta_origen">
             <End Role="origen" EntitySet="origen" />
             <End Role="venta" EntitySet="venta" />
-          </AssociationSet>
-          <AssociationSet Name="FK_preference_id_usuario" Association="Self.FK_preference_id_usuario">
-            <End Role="usuario" EntitySet="usuario" />
-            <End Role="preference_id" EntitySet="preference_id" />
           </AssociationSet>
           <AssociationSet Name="FK_usuario_rol" Association="Self.FK_usuario_rol">
             <End Role="rol" EntitySet="rol" />
@@ -663,7 +611,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ALESHOPWEBModelStoreContainer" CdmEntityContainer="ALESHOPWEBEntities">
+        <EntityContainerMapping StorageEntityContainer="ALESHOPWEBModelStoreContainer" CdmEntityContainer="ALESHOPWEBEntities9">
           <EntitySetMapping Name="carrito">
             <EntityTypeMapping TypeName="ALESHOPWEBModel.carrito">
               <MappingFragment StoreEntitySet="carrito">
@@ -709,15 +657,6 @@
               <MappingFragment StoreEntitySet="origen">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="tipo" ColumnName="tipo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="preference_id">
-            <EntityTypeMapping TypeName="ALESHOPWEBModel.preference_id">
-              <MappingFragment StoreEntitySet="preference_id">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="id_preference" ColumnName="id_preference" />
-                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

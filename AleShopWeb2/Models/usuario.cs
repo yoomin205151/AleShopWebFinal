@@ -17,7 +17,6 @@ namespace AleShopWeb2.Models
         public usuario()
         {
             this.carrito = new HashSet<carrito>();
-            this.preference_id = new HashSet<preference_id>();
             this.venta = new HashSet<venta>();
         }
     
@@ -29,7 +28,6 @@ namespace AleShopWeb2.Models
         public Nullable<int> id_rol { get; set; }
     
         public virtual ICollection<carrito> carrito { get; set; }
-        public virtual ICollection<preference_id> preference_id { get; set; }
         public virtual rol rol { get; set; }
         public virtual ICollection<venta> venta { get; set; }
     }

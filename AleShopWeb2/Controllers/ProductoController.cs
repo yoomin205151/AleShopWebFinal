@@ -15,7 +15,7 @@ namespace AleShopWeb2.Controllers
 {
     public class ProductoController : Controller
     {
-        private ALESHOPWEBEntities db = new ALESHOPWEBEntities();
+        private ALESHOPWEBEntities9 db = new ALESHOPWEBEntities9();
         // GET: Producto
         public ActionResult Index()
         {

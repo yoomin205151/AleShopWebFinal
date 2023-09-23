@@ -43,14 +43,6 @@
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="tipo" Type="varchar" MaxLength="30" />
   </EntityType>
-  <EntityType Name="preference_id">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="id_preference" Type="varchar" MaxLength="500" />
-    <Property Name="id_usuario" Type="int" />
-  </EntityType>
   <EntityType Name="producto">
     <Key>
       <PropertyRef Name="id" />
@@ -165,18 +157,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_preference_id_usuario">
-    <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
-    <End Role="preference_id" Type="Self.preference_id" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="usuario">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="preference_id">
-        <PropertyRef Name="id_usuario" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_producto_categoria">
     <End Role="categoria" Type="Self.categoria" Multiplicity="0..1" />
     <End Role="producto" Type="Self.producto" Multiplicity="*" />
@@ -262,7 +242,6 @@
     <EntitySet Name="categoria" EntityType="Self.categoria" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="detalle_venta" EntityType="Self.detalle_venta" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="origen" EntityType="Self.origen" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="preference_id" EntityType="Self.preference_id" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="producto" EntityType="Self.producto" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="rol" EntityType="Self.rol" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -287,10 +266,6 @@
     <AssociationSet Name="FK_detalle_venta_venta" Association="Self.FK_detalle_venta_venta">
       <End Role="venta" EntitySet="venta" />
       <End Role="detalle_venta" EntitySet="detalle_venta" />
-    </AssociationSet>
-    <AssociationSet Name="FK_preference_id_usuario" Association="Self.FK_preference_id_usuario">
-      <End Role="usuario" EntitySet="usuario" />
-      <End Role="preference_id" EntitySet="preference_id" />
     </AssociationSet>
     <AssociationSet Name="FK_producto_categoria" Association="Self.FK_producto_categoria">
       <End Role="categoria" EntitySet="categoria" />

@@ -10,7 +10,7 @@ namespace AleShopWeb2.Controllers
 {
     public class CuentaController : Controller
     {
-        private ALESHOPWEBEntities db = new ALESHOPWEBEntities();
+        private ALESHOPWEBEntities9 db = new ALESHOPWEBEntities9();
         // GET: Cuenta
         public ActionResult Index()
         {
@@ -30,11 +30,6 @@ namespace AleShopWeb2.Controllers
                     // Autenticación exitosa, realizar el inicio de sesión
                     FormsAuthentication.SetAuthCookie(user.email, false); // Establecer la cookie de autenticación
 
-                    // Almacena el ID del usuario en una cookie
-                    var userIdCookie = new HttpCookie("UserId");
-                    userIdCookie.Value = user.id.ToString();
-                    Response.Cookies.Add(userIdCookie);
-
                     Session["usuario"] = user;
 
                     return RedirectToAction("Index", "Home");
@@ -45,25 +40,15 @@ namespace AleShopWeb2.Controllers
             ModelState.AddModelError("", "El email o la contraseña no coinciden. Vuelva a intentarlo.");
             return View("Index");
         }
-
         public ActionResult Logout()
         {
             // Cerrar la sesión actual
             FormsAuthentication.SignOut();
             Session["usuario"] = null;
 
-            // Eliminar la cookie "UserId" si existe
-            if (Request.Cookies["UserId"] != null)
-            {
-                var userIdCookie = new HttpCookie("UserId");
-                userIdCookie.Expires = DateTime.Now.AddDays(-1); // Establecer una fecha de expiración en el pasado
-                Response.Cookies.Add(userIdCookie);
-            }
-
             // Redirigir al inicio o a la página de inicio de sesión
             return RedirectToAction("Index", "Home");
         }
-
 
         public ActionResult RegistroVista()
         {
