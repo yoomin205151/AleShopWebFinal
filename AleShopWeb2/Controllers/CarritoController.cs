@@ -1,4 +1,5 @@
 ﻿using AleShopWeb2.Models;
+using Antlr.Runtime.Misc;
 using MercadoPago.Client.Preference;
 using MercadoPago.Config;
 using MercadoPago.Resource.Preference;
@@ -19,7 +20,7 @@ namespace AleShopWeb2.Controllers
 {
     public class CarritoController : Controller
     {
-        private ALESHOPWEBEntities9 db = new ALESHOPWEBEntities9();
+        private ALESHOPWEBEntities db = new ALESHOPWEBEntities();
         // GET: Carrito
         public ActionResult Carrito()
         {
@@ -317,10 +318,29 @@ namespace AleShopWeb2.Controllers
                 },
             };
 
+            request.Metadata = new Dictionary<string, object>
+            {
+                ["user_id"] = user.id.ToString(), // Incluye el ID del usuario en los metadatos
+            };
+
             var client = new PreferenceClient();
             Preference preference = await client.CreateAsync(request);
 
             var preferencia = preference.Id;
+            string[] partes = preferencia.Split('-');
+            string primeraParte = partes[0];
+            Debug.WriteLine(primeraParte);
+            Debug.WriteLine(preferencia);
+            if (primeraParte != null)
+            {
+                var preferenceId = new preference_id
+                {
+                    id_usuario = user.id,
+                    id_preference = primeraParte,
+                };
+                db.preference_id.Add(preferenceId);
+                db.SaveChanges();
+            }
 
             // Devuelve el ID de la preferencia y las URLs de redirección como JSON
             return Json(new
@@ -334,7 +354,7 @@ namespace AleShopWeb2.Controllers
 
         [HttpPost]
         public ActionResult PaymentNotification()
-        {
+        {           
             try
             {
                 string requestBody;
@@ -343,28 +363,30 @@ namespace AleShopWeb2.Controllers
                     requestBody = reader.ReadToEnd();
                 }
 
+                Debug.WriteLine(requestBody);
+
                 // Deserializa el JSON en un objeto dinámico (JObject)
                 dynamic data = Newtonsoft.Json.Linq.JObject.Parse(requestBody);
 
                 // Accede a las propiedades del JSON
                 string action = data.action;
-                
+                string userId = data.user_id;
 
                 Debug.WriteLine(action);
+                Debug.WriteLine(userId);
 
                 if (action == "payment.created")
                 {
-                    // Obtener el usuario actual desde la sesión o de alguna otra manera
-                    // Puedes adaptar esto según tu estructura de autenticación
-                    usuario user = ObtenerUsuarioActual();
+                    var usuarioId = db.preference_id
+                                    .Where(p => p.id_preference == userId)
+                                    .Select(p => p.id_usuario)
+                                    .FirstOrDefault();
 
-                    if (user != null)
-                    {
-                        // Lógica de pago directamente aquí
-                        try
+                    Debug.WriteLine(usuarioId);
+                    if (usuarioId != null)
                         {
                             // Obtener los productos del carrito del usuario actual
-                            var carrito = db.carrito.Where(c => c.id_usuario == user.id).ToList();
+                            var carrito = db.carrito.Where(c => c.id_usuario == usuarioId).ToList();
 
                             if (carrito.Count == 0)
                             {
@@ -378,7 +400,7 @@ namespace AleShopWeb2.Controllers
                                 fecha = DateTime.Now,
                                 total = carrito.Sum(c => c.preciounitario * c.cantidad),
                                 id_origen = 1,
-                                id_usuario = user.id
+                                id_usuario = usuarioId
                             };
 
                             // Guardar la venta en la base de datos
@@ -413,17 +435,18 @@ namespace AleShopWeb2.Controllers
                             db.SaveChanges();
 
                             TempData["SuccessMessage"] = "Compra realizada con éxito.";
-                            return new HttpStatusCodeResult(HttpStatusCode.OK);
-                        }
-                        catch (Exception ex)
-                        {
-                            TempData["ErrorMessage"] = "Error al realizar el pago. Por favor, inténtelo nuevamente.";
-                            Console.WriteLine(ex.ToString());
-                            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                            var registrosAEliminar = db.preference_id.Where(p => p.id_usuario == usuarioId);
+                            foreach (var registro in registrosAEliminar)
+                            {
+                                db.preference_id.Remove(registro);
+                            }
+                            db.SaveChanges();
+
+                        return new HttpStatusCodeResult(HttpStatusCode.OK);
                         }
                     }
-                }
-
+                
                 // Devuelve una respuesta exitosa al webhook de MercadoPago si la acción no es "payment.created"
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
             }
@@ -431,23 +454,10 @@ namespace AleShopWeb2.Controllers
             {
                 // En caso de error, puedes registrar el error y devolver una respuesta de error
                 // También puedes notificar al sistema sobre el error si es necesario
-                Console.WriteLine(ex.ToString());
+                Debug.WriteLine("Error en PaymentNotification: " + ex.ToString());
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
         }
-
-        private usuario ObtenerUsuarioActual()
-        {
-            // Implementa la lógica para obtener el usuario actual desde la sesión o la autenticación
-            // Puedes adaptar esto según tu estructura de autenticación
-            if (Session["usuario"] != null && Session["usuario"] is usuario user && user.id > 0)
-            {
-                return user;
-            }
-            return null;
-        }
-
-
 
 
 

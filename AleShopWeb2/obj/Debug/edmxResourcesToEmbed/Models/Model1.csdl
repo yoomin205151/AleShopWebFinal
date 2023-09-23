@@ -50,6 +50,15 @@
     <Property Name="tipo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="venta" Relationship="Self.FK_venta_origen" FromRole="origen" ToRole="venta" />
   </EntityType>
+  <EntityType Name="preference_id">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_preference" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="id_usuario" Type="Int32" />
+    <NavigationProperty Name="usuario" Relationship="Self.FK_preference_id_usuario" FromRole="preference_id" ToRole="usuario" />
+  </EntityType>
   <EntityType Name="producto">
     <Key>
       <PropertyRef Name="id" />
@@ -95,6 +104,7 @@
     <Property Name="contrasenia" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="id_rol" Type="Int32" />
     <NavigationProperty Name="carrito" Relationship="Self.FK_carrito_usuario" FromRole="usuario" ToRole="carrito" />
+    <NavigationProperty Name="preference_id" Relationship="Self.FK_preference_id_usuario" FromRole="usuario" ToRole="preference_id" />
     <NavigationProperty Name="rol" Relationship="Self.FK_usuario_rol" FromRole="usuario" ToRole="rol" />
     <NavigationProperty Name="venta" Relationship="Self.FK_venta_usuario" FromRole="usuario" ToRole="venta" />
   </EntityType>
@@ -199,6 +209,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_preference_id_usuario">
+    <End Role="usuario" Type="Self.usuario" Multiplicity="0..1" />
+    <End Role="preference_id" Type="Self.preference_id" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="preference_id">
+        <PropertyRef Name="id_usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_usuario_rol">
     <End Role="rol" Type="Self.rol" Multiplicity="0..1" />
     <End Role="usuario" Type="Self.usuario" Multiplicity="*" />
@@ -223,12 +245,13 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="ALESHOPWEBEntities9" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="ALESHOPWEBEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="carrito" EntityType="Self.carrito" />
     <EntitySet Name="carrito_pc" EntityType="Self.carrito_pc" />
     <EntitySet Name="categoria" EntityType="Self.categoria" />
     <EntitySet Name="detalle_venta" EntityType="Self.detalle_venta" />
     <EntitySet Name="origen" EntityType="Self.origen" />
+    <EntitySet Name="preference_id" EntityType="Self.preference_id" />
     <EntitySet Name="producto" EntityType="Self.producto" />
     <EntitySet Name="rol" EntityType="Self.rol" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
@@ -261,6 +284,10 @@
     <AssociationSet Name="FK_venta_origen" Association="Self.FK_venta_origen">
       <End Role="origen" EntitySet="origen" />
       <End Role="venta" EntitySet="venta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_preference_id_usuario" Association="Self.FK_preference_id_usuario">
+      <End Role="usuario" EntitySet="usuario" />
+      <End Role="preference_id" EntitySet="preference_id" />
     </AssociationSet>
     <AssociationSet Name="FK_usuario_rol" Association="Self.FK_usuario_rol">
       <End Role="rol" EntitySet="rol" />

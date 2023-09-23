@@ -16,10 +16,10 @@ namespace AleShopWeb2.Models
     using System.Data.Objects.DataClasses;
     using System.Linq;
     
-    public partial class ALESHOPWEBEntities9 : DbContext
+    public partial class ALESHOPWEBEntities : DbContext
     {
-        public ALESHOPWEBEntities9()
-            : base("name=ALESHOPWEBEntities9")
+        public ALESHOPWEBEntities()
+            : base("name=ALESHOPWEBEntities")
         {
         }
     
@@ -33,6 +33,7 @@ namespace AleShopWeb2.Models
         public DbSet<categoria> categoria { get; set; }
         public DbSet<detalle_venta> detalle_venta { get; set; }
         public DbSet<origen> origen { get; set; }
+        public DbSet<preference_id> preference_id { get; set; }
         public DbSet<producto> producto { get; set; }
         public DbSet<rol> rol { get; set; }
         public DbSet<sysdiagrams> sysdiagrams { get; set; }

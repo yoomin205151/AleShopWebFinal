@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="ALESHOPWEBModelStoreContainer" CdmEntityContainer="ALESHOPWEBEntities9">
+  <EntityContainerMapping StorageEntityContainer="ALESHOPWEBModelStoreContainer" CdmEntityContainer="ALESHOPWEBEntities">
     <EntitySetMapping Name="carrito">
       <EntityTypeMapping TypeName="ALESHOPWEBModel.carrito">
         <MappingFragment StoreEntitySet="carrito">
@@ -46,6 +46,15 @@
         <MappingFragment StoreEntitySet="origen">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="tipo" ColumnName="tipo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="preference_id">
+      <EntityTypeMapping TypeName="ALESHOPWEBModel.preference_id">
+        <MappingFragment StoreEntitySet="preference_id">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="id_preference" ColumnName="id_preference" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

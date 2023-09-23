@@ -178,6 +178,9 @@
     <Compile Include="Models\origen.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\preference_id.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\producto.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

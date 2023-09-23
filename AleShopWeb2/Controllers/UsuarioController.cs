@@ -9,7 +9,7 @@ namespace AleShopWeb2.Controllers
 {
     public class UsuarioController : Controller
     {
-        private ALESHOPWEBEntities9 db = new ALESHOPWEBEntities9();
+        private ALESHOPWEBEntities db = new ALESHOPWEBEntities();
 
         // GET: Usuario
         public ActionResult Index()

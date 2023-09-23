@@ -10,7 +10,7 @@ namespace AleShopWeb2.Controllers
 {
     public class HomeController : Controller
     {
-        private ALESHOPWEBEntities9 db = new ALESHOPWEBEntities9();
+        private ALESHOPWEBEntities db = new ALESHOPWEBEntities();
         public ActionResult Index()
         {
             return View();
